@@ -1,18 +1,6 @@
 import React from 'react';
 
-const WorkoutsList = ({ workouts, setForm, setWorkouts }) => {
-  const handleDelete = id => {
-    setWorkouts(prevWorkouts =>
-      prevWorkouts.filter(workout => workout.id !== id),
-    );
-  };
-
-  const handleEdit = id => {
-    const workout = workouts.find(item => item.id === id);
-    setForm({ date: workout.date, distance: workout.distance });
-    handleDelete(id);
-  };
-
+const WorkoutsList = ({ workouts, handleEdit, handleDelete }) => {
   return (
     <table className="ui basic table">
       <thead>

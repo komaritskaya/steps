@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import WorkoutModel from '../models/WorkoutModel';
 import shortid from 'shortid';
 
-const AddForm = ({ form, setForm, setWorkouts }) => {
+const AddForm = ({ currentWorkout, handleAdd }) => {
+  const [form, setForm] = useState({ date: '', distance: '' });
+
+  useEffect(() => {
+    if (currentWorkout) {
+      setForm({ date: currentWorkout.date, distance: currentWorkout.distance });
+    }
+  }, [currentWorkout]);
+
   const handleChange = evt => {
     const { name, value } = evt.target;
     setForm(prevForm => ({ ...prevForm, [name]: value }));
@@ -16,23 +24,8 @@ const AddForm = ({ form, setForm, setWorkouts }) => {
       form.date,
       form.distance,
     );
-    setWorkouts(prevWorkouts => {
-      for (let prevWorkout of prevWorkouts) {
-        if (prevWorkout.date === workout.date) {
-          prevWorkout.distance =
-            Number(prevWorkout.distance) + Number(workout.distance);
-          return prevWorkouts.sort(sortItems);
-        }
-      }
-      return [...prevWorkouts, workout].sort(sortItems);
-    });
+    handleAdd(workout);
     setForm({ date: '', distance: '' });
-  };
-
-  const sortItems = (date1, date2) => {
-    if (date1.date > date2.date) return -1;
-    if (date1.date < date2.date) return 1;
-    return 0;
   };
 
   return (
@@ -74,8 +67,6 @@ const AddForm = ({ form, setForm, setWorkouts }) => {
 };
 
 AddForm.propTypes = {
-  form: PropTypes.object.isRequired,
-  setForm: PropTypes.func.isRequired,
   setWorkouts: PropTypes.func.isRequired,
 };
 
